@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS configuration for custom theme -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#a5b4fc',
+                        dark: '#111827',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d111c;
+            color: #d1d5db;
+            overflow: hidden;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .frosted-glass {
+            background: rgba(17, 24, 39, 0.7); /* dark theme semi-transparent */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.3); /* subtle border */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased relative">
+
+    <!-- Three.js Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Header -->
+    <header class="absolute top-0 left-0 right-0 p-4 md:p-8 z-20">
+        <nav class="flex justify-between items-center max-w-7xl mx-auto">
+            <div class="text-2xl font-bold text-white">Crypto Studio</div>
+            <a href="#" class="px-4 py-2 text-sm font-semibold text-white bg-primary rounded-full hover:bg-indigo-600 transition-colors hidden md:inline-block">Get Started</a>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 flex flex-col md:flex-row items-center justify-center min-h-screen p-4 md:p-8">
+        <!-- Hero Content -->
+        <div class="flex-1 max-w-2xl text-center md:text-left md:mr-16 mb-8 md:mb-0 transition-all duration-500">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 leading-tight tracking-tight">
+                Empower Your <span class="text-primary">Crypto</span> Journey
+            </h1>
+            <p class="text-lg md:text-xl text-gray-400 mb-6">
+                A seamless platform for managing all your crypto transactions. Secure, fast, and built for the future.
+            </p>
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#auth-card" class="px-6 py-3 bg-primary text-white font-bold rounded-lg shadow-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200">
+                    Join Now
+                </a>
+                <a href="#" class="px-6 py-3 bg-gray-700 text-white font-bold rounded-lg shadow-lg hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                    Learn More
+                </a>
+            </div>
+        </div>
+
+        <!-- Login/Signup Card -->
+        <div id="auth-card" class="frosted-glass p-8 rounded-2xl shadow-xl max-w-sm w-full transition-all duration-300">
+            <h2 class="text-lg md:text-xl font-semibold text-white mb-4 text-center">Get Started</h2>
+            <div class="flex flex-col space-y-4">
+                <div id="login-form">
+                    <h2 class="text-lg font-semibold text-white mb-4 text-center">Log In</h2>
+                    <input id="login-email" type="email" placeholder="Email" class="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors mb-3" />
+                    <input id="login-password" type="password" placeholder="Password" class="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors mb-4" />
+                    <button id="login-btn" class="w-full px-4 py-3 bg-primary text-white font-bold rounded-lg shadow-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200">
+                        Log In
+                    </button>
+                </div>
+
+                <div id="signup-form" class="hidden">
+                    <h2 class="text-lg font-semibold text-white mb-4 text-center">Create Account</h2>
+                    <input id="signup-email" type="email" placeholder="Email" class="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors mb-3" />
+                    <input id="signup-password" type="password" placeholder="Password" class="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors mb-4" />
+                    <button id="signup-btn" class="w-full px-4 py-3 bg-primary text-white font-bold rounded-lg shadow-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200">
+                        Sign Up
+                    </button>
+                </div>
+
+                <p class="text-center text-sm text-gray-400 mt-4">
+                    <span id="toggle-text">Don't have an account?</span>
+                    <a href="#" id="toggle-auth-link" class="text-primary hover:underline transition-colors ml-1">Sign Up</a>
+                </p>
+
+                <!-- Google Auth Button -->
+                <div class="relative flex items-center justify-center my-4">
+                    <span class="absolute px-3 bg-gray-900 text-gray-400 text-sm z-10">OR</span>
+                    <div class="h-px bg-gray-700 w-full absolute"></div>
+                </div>
+
+                <button id="google-auth-btn" class="flex items-center justify-center w-full px-4 py-3 bg-gray-700 text-white rounded-lg shadow-lg hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                    <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.954 4.545c-.476 1.057-1.282 1.944-2.298 2.584-1.016.64-2.224.996-3.486.996-2.617 0-4.873-1.428-5.968-3.535l-.014-.029c-1.077 2.155-3.328 3.584-5.945 3.584-1.263 0-2.47-.356-3.486-.996-1.016-.64-1.822-1.527-2.298-2.584-1.025-2.274-1.636-4.725-1.636-7.319 0-2.594.611-5.045 1.636-7.319l.014-.029c1.095 2.107 3.351 3.535 5.968 3.535 1.262 0 2.47-.356 3.486-.996 1.016-.64 1.822-1.527 2.298-2.584 1.025 2.274 1.636 4.725 1.636 7.319 0 2.594-.611 5.045-1.636 7.319zM12 11c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM19 16c0 3.86-3.14 7-7 7s-7-3.14-7-7 3.14-7 7-7 7 3.14 7 7zm-5 0c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
+            </div>
+            
+            <!-- Message Box for authentication feedback -->
+            <div id="message-box" class="hidden mt-4 p-3 rounded-lg text-center font-medium"></div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- Three.js Background ---
+        const canvas = document.getElementById('bg-canvas');
+        const sizes = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
+        camera.position.z = 5;
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            alpha: true,
+            antialias: true
+        });
+        renderer.setSize(sizes.width, sizes.height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0xa5b4fc, 1, 100);
+        pointLight1.position.set(5, 5, 5);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0x6366f1, 1, 100);
+        pointLight2.position.set(-5, -5, 5);
+        scene.add(pointLight2);
+
+        // Starfield background
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 5000;
+        const positions = new Float32Array(starCount * 3);
+        for (let i = 0; i < starCount * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 200;
+        }
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const starMaterial = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 0.2,
+            sizeAttenuation: true
+        });
+        const stars = new THREE.Points(starGeometry, starMaterial);
+        scene.add(stars);
+
+        // Array to hold the trail particles
+        const trailParticles = [];
+        const particleGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+        const particleMaterial = new THREE.MeshBasicMaterial({
+            color: 0xa5b4fc,
+            transparent: true,
+            opacity: 1
+        });
+
+        // Event listener for pointer movement to create the trail
+        window.addEventListener('pointermove', (event) => {
+            // Get normalized device coordinates
+            const normalizedX = (event.clientX / sizes.width) * 2 - 1;
+            const normalizedY = -(event.clientY / sizes.height) * 2 + 1;
+
+            // Use raycaster to get a point in 3D space
+            const vector = new THREE.Vector3(normalizedX, normalizedY, 0.5);
+            vector.unproject(camera);
+            const dir = vector.sub(camera.position).normalize();
+            const distance = -camera.position.z / dir.z;
+            const pos = camera.position.clone().add(dir.multiplyScalar(distance));
+            
+            // Create a new particle at the pointer's position
+            const particle = new THREE.Mesh(particleGeometry, particleMaterial.clone());
+            particle.position.copy(pos);
+            scene.add(particle);
+            trailParticles.push(particle);
+
+            // Clean up old particles to prevent performance issues
+            if (trailParticles.length > 100) {
+                const oldestParticle = trailParticles.shift();
+                scene.remove(oldestParticle);
+                oldestParticle.geometry.dispose();
+                oldestParticle.material.dispose();
+            }
+        });
+
+        // Animation loop
+        const animate = () => {
+            requestAnimationFrame(animate);
+
+            // Animate star positions
+            stars.rotation.y += 0.0002;
+            stars.rotation.x += 0.0001;
+            
+            // Animate the trail particles
+            trailParticles.forEach(particle => {
+                // Shrink and fade out the particle
+                particle.scale.multiplyScalar(0.95);
+                particle.material.opacity *= 0.95;
+            });
+            
+            renderer.render(scene, camera);
+        };
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+            sizes.width = window.innerWidth;
+            sizes.height = window.innerHeight;
+
+            camera.aspect = sizes.width / sizes.height;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(sizes.width, sizes.height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        });
+
+        // Start the animation loop on window load
+        window.onload = function() {
+            animate();
+        };
+
+        // --- Auth Form Logic ---
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const toggleAuthLink = document.getElementById('toggle-auth-link');
+        const toggleAuthText = document.getElementById('toggle-text');
+        const messageBox = document.getElementById('message-box');
+        const googleAuthBtn = document.getElementById('google-auth-btn');
+        
+        // Helper function to show a message
+        const showMessage = (text, type = 'info') => {
+            messageBox.textContent = text;
+            messageBox.classList.remove('hidden', 'bg-red-500', 'bg-green-500', 'bg-blue-500');
+            if (type === 'success') {
+                messageBox.classList.add('bg-green-500');
+            } else if (type === 'error') {
+                messageBox.classList.add('bg-red-500');
+            } else {
+                messageBox.classList.add('bg-blue-500');
+            }
+        };
+
+        toggleAuthLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (loginForm.classList.contains('hidden')) {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                toggleAuthText.textContent = "Don't have an account?";
+                toggleAuthLink.textContent = "Sign Up";
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                toggleAuthText.textContent = "Already have an account?";
+                toggleAuthLink.textContent = "Log In";
+            }
+            messageBox.classList.add('hidden');
+        });
+
+        // Event listener for login button
+        document.getElementById('login-btn').addEventListener('click', () => {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            if (email && password) {
+                showMessage("Login functionality is a placeholder. A real implementation would connect to a backend.", 'info');
+            } else {
+                showMessage("Please enter both email and password.", 'error');
+            }
+        });
+
+        // Event listener for signup button
+        document.getElementById('signup-btn').addEventListener('click', () => {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            if (email && password) {
+                showMessage("Signup functionality is a placeholder. A real implementation would connect to a backend.", 'info');
+            } else {
+                showMessage("Please enter both email and password.", 'error');
+            }
+        });
+
+        // Event listener for Google Auth button
+        googleAuthBtn.addEventListener('click', () => {
+            showMessage("Google Auth is a placeholder. A real implementation requires Firebase or another backend service.", 'info');
+        });
+
+    </script>
+</body>
+</html>
