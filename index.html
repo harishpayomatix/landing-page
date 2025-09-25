@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Dashboard</title>
+    <title>Crypto Conversion Dashboard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts for Inter -->
@@ -121,7 +121,7 @@
             --color-chart-7: oklch(0.8 0.15 280);
             --color-chart-8: oklch(0.85 0.18 50);
             --color-chart-9: oklch(0.7 0.13 160);
-            --color-chart-10: oklch(0.65 0.1 350);
+            --color-chart-10: oklch(0.55 0.1 350);
         }
 
         .font-inter {
@@ -129,8 +129,40 @@
         }
 
         .selected-connector {
-            border-color: var(--primary);
-            background-color: var(--muted);
+            border-color: var(--primary) !important;
+            background-color: var(--muted) !important;
+        }
+
+        .fiat-input, .crypto-input {
+            width: 45%;
+        }
+
+        .fiat-input label, .crypto-input label {
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .crypto-card-icon {
+            font-size: 2.5rem;
+        }
+
+        .swap-icon-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .market-rate {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .market-rate:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
@@ -143,9 +175,9 @@
         </div>
         <nav class="hidden md:flex space-x-8 text-[var(--muted-foreground)]">
             <a href="#" class="font-semibold hover:text-[var(--foreground)] transition-colors duration-300">Dashboard</a>
-            <a href="#" class="font-semibold hover:text-[var(--foreground)] transition-colors duration-300">History</a>
-            <a href="#" class="font-semibold hover:text-[var(--foreground)] transition-colors duration-300">Wallet</a>
+            <a href="#" class="font-semibold hover:text-[var(--foreground)] transition-colors duration-300">Transactions</a>
             <a href="#" class="font-semibold hover:text-[var(--foreground)] transition-colors duration-300">Support</a>
+            <a href="#" class="font-semibold hover:text-[var(--foreground)] transition-colors duration-300">Settings</a>
         </nav>
         <div class="flex items-center space-x-4">
             <button id="theme-toggle" class="p-2 rounded-full border border-[var(--border)] transition-colors duration-300 hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)]">
@@ -158,62 +190,107 @@
     </header>
 
     <!-- Main Dashboard Content -->
-    <main class="p-6 md:p-8 space-y-6 md:grid md:grid-cols-2 md:gap-6">
-        <h2 class="col-span-2 text-2xl font-bold mb-6">Dashboard</h2>
+    <main class="p-6 md:p-8 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- First Half: Convert Currency Card -->
+            <div class="bg-[var(--card)] p-8 rounded-xl shadow-lg border border-[var(--border)]">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="text-[var(--foreground)]">
+                        <h3 class="text-xl font-semibold mb-2">Convert Fiat to Crypto</h3>
+                        <p class="text-sm text-[var(--muted-foreground)]">Seamlessly switch between FIAT and Crypto.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="flex flex-col space-y-4 w-full">
+                        <!-- From (FIAT) Input -->
+                        <div class="fiat-input flex flex-col space-y-2 w-full">
+                            <label for="fiat-input" class="text-sm font-medium text-[var(--muted-foreground)]">Amount</label>
+                            <div class="flex items-center space-x-2 p-3 rounded-lg bg-[var(--input)] border border-[var(--border)] focus-within:ring-2 focus-within:ring-[var(--ring)]">
+                                <span class="text-[var(--muted-foreground)]">$</span>
+                                <input type="number" id="fiat-input" placeholder="100" class="w-full bg-transparent text-[var(--foreground)] focus:outline-none">
+                            </div>
+                        </div>
         
-        <!-- Card 1: Transfer Funds -->
-        <div class="bg-[var(--card)] p-8 rounded-xl shadow-lg border border-[var(--border)] col-span-2 md:col-span-1">
-            <h3 class="text-xl font-semibold text-[var(--card-foreground)] mb-4">Transfer Funds</h3>
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
-                <button id="send-tab" class="flex-1 p-3 rounded-lg font-bold transition-colors duration-300 bg-[var(--primary)] text-[var(--primary-foreground)]">Send</button>
-                <button id="receive-tab" class="flex-1 p-3 rounded-lg font-bold transition-colors duration-300 bg-[var(--muted)] text-[var(--muted-foreground)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)]">Receive</button>
+                        <div class="fiat-input flex flex-col space-y-2 w-full">
+                            <label class="text-sm font-medium text-[var(--muted-foreground)]">From (FIAT)</label>
+                            <select id="fiat-currency" class="w-full p-3 rounded-lg bg-[var(--input)] text-[var(--foreground)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
+                                <option value="USD">USD - United States Dollar</option>
+                                <option value="EUR">EUR - Euro</option>
+                                <option value="GBP">GBP - British Pound</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Conversion Icon (Vertical) -->
+                    <div class="p-2 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] hover:scale-110 transition-transform duration-300 cursor-pointer flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-repeat rotate-90"><polyline points="17 1 21 5 17 9"></polyline><path d="M21 5H3v14M7 23l-4-4 4-4"></path></svg>
+                    </div>
+
+                    <div class="flex flex-col space-y-4 w-full">
+                        <!-- To (CRYPTO) Input -->
+                        <div class="crypto-input flex flex-col space-y-2 w-full">
+                            <label class="text-sm font-medium text-[var(--muted-foreground)]">To (CRYPTO)</label>
+                            <select id="crypto-currency" class="w-full p-3 rounded-lg bg-[var(--input)] text-[var(--foreground)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
+                                <option value="BTC">BTC (Bitcoin)</option>
+                                <option value="ETH">ETH (Ethereum)</option>
+                                <option value="SOL">SOL (Solana)</option>
+                                <option value="TUSD">TUSD (Tron)</option>
+                            </select>
+                        </div>
+        
+                        <div class="crypto-input flex flex-col space-y-2 w-full">
+                            <label for="crypto-output" class="text-sm font-medium text-[var(--muted-foreground)]">Result</label>
+                            <div class="flex items-center space-x-2 p-3 rounded-lg bg-[var(--input)] border border-[var(--border)]">
+                                <input type="text" id="crypto-output" placeholder="0.00" class="w-full bg-transparent text-[var(--foreground)] focus:outline-none" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="convert-btn" class="w-full p-4 mt-6 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold shadow-md transition-transform duration-300 hover:scale-[1.02]">Convert</button>
             </div>
-            
-            <div class="space-y-4">
-                <div>
-                    <label for="currency-select" class="block text-sm font-medium mb-1 text-[var(--muted-foreground)]">Select Crypto</label>
-                    <select id="currency-select" class="w-full p-3 rounded-lg bg-[var(--input)] text-[var(--foreground)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
-                        <option value="BTC">Bitcoin (BTC)</option>
-                        <option value="ETH">Ethereum (ETH)</option>
-                        <option value="SOL">Solana (SOL)</option>
-                    </select>
+
+            <!-- Second Half: Content Card -->
+            <div class="bg-[var(--card)] p-8 rounded-xl shadow-lg border border-[var(--border)] space-y-6">
+                <div class="space-y-2">
+                    <h3 class="text-xl font-semibold">Dashboard Guide</h3>
+                    <p class="text-sm text-[var(--muted-foreground)]">Here's a quick guide to using our crypto conversion tool and a look at some live market rates.</p>
                 </div>
-                <div>
-                    <label for="connector-select" class="block text-sm font-medium mb-1 text-[var(--muted-foreground)]">Transfer Method</label>
-                    <select id="connector-select" class="w-full p-3 rounded-lg bg-[var(--input)] text-[var(--foreground)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
-                        <option value="bank">Bank Transfer</option>
-                        <option value="card">Credit/Debit Card</option>
-                        <option value="wallet">Crypto Wallet</option>
-                    </select>
+                
+                <div class="space-y-4">
+                    <div class="flex flex-col space-y-1">
+                        <p class="font-bold text-lg">1. Convert Currency</p>
+                        <p class="text-sm text-[var(--muted-foreground)]">Enter a FIAT amount and choose your desired cryptocurrency. The conversion will be calculated based on the selected connector.</p>
+                    </div>
+                    <div class="flex flex-col space-y-1">
+                        <p class="font-bold text-lg">2. Choose a Connector</p>
+                        <p class="text-sm text-[var(--muted-foreground)]">Select a connector below to see its specific rates and fees. The "Best Rate" badge helps you find the most efficient option.</p>
+                    </div>
+                    <div class="flex flex-col space-y-1">
+                        <p class="font-bold text-lg">3. View Transactions</p>
+                        <p class="text-sm text-[var(--muted-foreground)]">All your recent conversion history is available at the bottom of the page for easy tracking.</p>
+                    </div>
                 </div>
-                <div id="wallet-display-container" class="mt-4 hidden">
-                    <label class="block text-sm font-medium mb-1 text-[var(--muted-foreground)]">Associated Wallet Address</label>
-                    <div id="wallet-display" class="p-3 bg-[var(--muted)] rounded-lg text-[var(--foreground)] text-sm break-words border border-[var(--border)]"></div>
-                </div>
-                <div>
-                    <label for="amount-input" class="block text-sm font-medium mb-1 text-[var(--muted-foreground)]">Amount</label>
-                    <input type="number" id="amount-input" placeholder="Enter amount" class="w-full p-3 rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder-[var(--muted-foreground)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
-                </div>
-                <button id="confirm-transaction" class="w-full p-4 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold shadow-md transition-transform duration-300 hover:scale-[1.02]">Confirm</button>
+            </div>
+        </div>
+        
+        <!-- Available Connectors Section -->
+        <div>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-[var(--card-foreground)]">Available Connectors</h3>
+                <span class="text-sm text-[var(--muted-foreground)]">Compare rates and choose the best option for your transaction.</span>
+            </div>
+            <div id="connector-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Connectors will be dynamically generated here -->
             </div>
         </div>
 
-        <!-- Card 2: Recent Transaction History -->
-        <div class="bg-[var(--card)] p-6 rounded-xl shadow-lg border border-[var(--border)] col-span-2 md:col-span-1">
+        <!-- Recent Transactions History -->
+        <div class="bg-[var(--card)] p-6 rounded-xl shadow-lg border border-[var(--border)] mt-8">
             <h3 class="text-xl font-semibold text-[var(--card-foreground)] mb-4">Recent Transactions</h3>
             <ul id="transaction-list" class="divide-y divide-[var(--border)]">
                 <!-- Transaction items will be dynamically added here -->
-            </ul>
-            <a href="#" class="mt-4 block text-center text-[var(--primary)] font-semibold hover:underline">View All Transactions</a>
-        </div>
-        
-        <!-- Card 3: Connector Usage -->
-        <div class="bg-[var(--card)] p-6 rounded-xl shadow-lg border border-[var(--border)] col-span-2 md:col-span-1">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold text-[var(--card-foreground)]">Your Connectors</h3>
-            </div>
-            <ul id="connector-usage-list" class="space-y-4">
-                <!-- Connector items will be dynamically added here -->
             </ul>
         </div>
     </main>
@@ -223,24 +300,20 @@
             document.documentElement.classList.toggle('dark');
         });
 
-        const sendTab = document.getElementById('send-tab');
-        const receiveTab = document.getElementById('receive-tab');
-        const confirmBtn = document.getElementById('confirm-transaction');
-        const connectorListEl = document.getElementById('connector-usage-list');
+        const connectorContainer = document.getElementById('connector-container');
+        const convertBtn = document.getElementById('convert-btn');
+        const fiatInput = document.getElementById('fiat-input');
+        const cryptoOutput = document.getElementById('crypto-output');
         const transactionListEl = document.getElementById('transaction-list');
-        const connectorSelect = document.getElementById('connector-select');
-        const walletDisplay = document.getElementById('wallet-display');
-        const walletDisplayContainer = document.getElementById('wallet-display-container');
-        
-        let transactionType = 'Send';
 
-        // Mock data for connectors and their usage
+        let selectedConnector = null;
+
         const connectors = [
-            { name: 'Bank Transfer', usage: 75, color: 'brand-cyan', value: 'bank', wallet: 'N/A' },
-            { name: 'Credit/Debit Card', usage: 45, color: 'brand-purple', value: 'card', wallet: 'N/A' },
-            { name: 'Crypto Wallet', usage: 90, color: 'brand-magenta', value: 'wallet', wallet: '0x32A6f4B9c7bC8bE17E451C8D4f49B55bE1286C45' },
+            { name: 'Test', rate: 0.154201, fee: 4.69, bestRate: true, value: 'test' },
+            { name: 'Main Connector', rate: 0.145123, fee: 4.99, bestRate: false, value: 'main' },
+            { name: 'Another Connector', rate: 0.138765, fee: 5.25, bestRate: false, value: 'another' },
         ];
-        
+
         // Mock data for recent transactions
         const transactions = [
             { type: 'Sent', amount: 0.05, currency: 'BTC', date: 'Jun 25, 2024 at 10:30 AM', status: 'Completed', statusClass: 'bg-[var(--color-success-secondary)] text-[var(--color-success)]' },
@@ -248,26 +321,40 @@
             { type: 'Sent', amount: 0.1, currency: 'SOL', date: 'Jun 23, 2024 at 09:00 AM', status: 'Pending', statusClass: 'bg-[var(--color-pending)] text-[var(--color-warning)]' },
         ];
 
-        function renderConnectorUsage() {
-            connectorListEl.innerHTML = '';
+        function renderConnectors() {
+            connectorContainer.innerHTML = '';
             connectors.forEach(connector => {
-                const listItem = document.createElement('li');
-                listItem.classList.add('p-4', 'rounded-lg', 'border', 'border-[var(--border)]', 'space-y-2', 'cursor-pointer', 'hover:bg-[var(--muted)]', 'transition-all', 'duration-200');
-                listItem.dataset.connectorValue = connector.value;
-                listItem.dataset.walletAddress = connector.wallet;
-                listItem.innerHTML = `
-                    <div class="flex justify-between items-center text-[var(--foreground)]">
-                        <span class="font-medium">${connector.name}</span>
-                        <span class="text-sm font-semibold">${connector.usage}%</span>
+                const connectorCard = document.createElement('div');
+                connectorCard.classList.add('bg-[var(--card)]', 'p-6', 'rounded-xl', 'shadow-lg', 'border', 'border-[var(--border)]', 'cursor-pointer', 'transition-all', 'duration-200', 'hover:bg-[var(--muted)]', 'flex', 'flex-col', 'items-start');
+                
+                if (connector.bestRate) { // Default selection based on "Best Rate"
+                    selectedConnector = connector;
+                    connectorCard.classList.add('selected-connector');
+                }
+
+                connectorCard.dataset.value = connector.value;
+
+                connectorCard.innerHTML = `
+                    <div class="flex items-center space-x-2 mb-2">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--primary)] text-[var(--primary-foreground)] font-bold">
+                            ${connector.name.charAt(0)}
+                        </div>
+                        <h4 class="text-lg font-semibold">${connector.name}</h4>
+                        ${connector.bestRate ? `<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-[var(--color-success-secondary)] text-[var(--color-success)]">Best Rate</span>` : ''}
                     </div>
-                    <div class="w-full bg-[var(--muted)] rounded-full h-2.5">
-                        <div class="h-2.5 rounded-full" style="width: ${connector.usage}%; background-color: oklch(var(--color-${connector.color}))"></div>
+                    <div class="w-full flex justify-between items-center text-[var(--muted-foreground)] mt-auto">
+                        <div>
+                            <p class="text-sm font-medium">RATE</p>
+                            <p class="text-lg font-bold text-[var(--foreground)]">${connector.rate}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium">FEE</p>
+                            <p class="text-lg font-bold text-[var(--foreground)]">${connector.fee}%</p>
+                        </div>
                     </div>
                 `;
-                connectorListEl.appendChild(listItem);
+                connectorContainer.appendChild(connectorCard);
             });
-            updateConnectorSelection();
-            updateWalletDisplay();
         }
         
         function renderTransactionList() {
@@ -286,99 +373,64 @@
             });
         }
 
-        function updateConnectorSelection() {
-            const currentSelectedValue = connectorSelect.value;
-            const allListItems = connectorListEl.querySelectorAll('li');
-            allListItems.forEach(item => {
-                if (item.dataset.connectorValue === currentSelectedValue) {
-                    item.classList.add('selected-connector');
-                } else {
-                    item.classList.remove('selected-connector');
-                }
-            });
-        }
+        connectorContainer.addEventListener('click', (event) => {
+            const clickedCard = event.target.closest('[data-value]');
+            if (clickedCard) {
+                // Remove selected class from all cards
+                document.querySelectorAll('#connector-container > div').forEach(card => {
+                    card.classList.remove('selected-connector');
+                });
+                // Add selected class to the clicked card
+                clickedCard.classList.add('selected-connector');
 
-        function updateWalletDisplay() {
-            const selectedConnector = connectors.find(c => c.value === connectorSelect.value);
-            if (selectedConnector && selectedConnector.wallet !== 'N/A') {
-                walletDisplay.textContent = selectedConnector.wallet;
-                walletDisplayContainer.classList.remove('hidden');
+                // Update the selected connector object
+                const connectorValue = clickedCard.dataset.value;
+                selectedConnector = connectors.find(c => c.value === connectorValue);
+                updateCryptoOutput();
+            }
+        });
+
+        function updateCryptoOutput() {
+            const fiatAmount = parseFloat(fiatInput.value);
+            if (selectedConnector && !isNaN(fiatAmount) && fiatAmount > 0) {
+                const cryptoAmount = fiatAmount * selectedConnector.rate;
+                cryptoOutput.value = cryptoAmount.toFixed(6);
             } else {
-                walletDisplayContainer.classList.add('hidden');
+                cryptoOutput.value = '0.00';
             }
         }
 
-        sendTab.addEventListener('click', () => {
-            transactionType = 'Send';
-            sendTab.classList.add('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
-            sendTab.classList.remove('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
-            receiveTab.classList.add('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
-            receiveTab.classList.remove('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
-        });
-
-        receiveTab.addEventListener('click', () => {
-            transactionType = 'Receive';
-            receiveTab.classList.add('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
-            receiveTab.classList.remove('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
-            sendTab.classList.add('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
-            sendTab.classList.remove('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
-        });
-
-        connectorListEl.addEventListener('click', (event) => {
-            const clickedItem = event.target.closest('li');
-            if (clickedItem) {
-                const selectedValue = clickedItem.dataset.connectorValue;
-                connectorSelect.value = selectedValue;
-                updateConnectorSelection();
-                updateWalletDisplay();
-            }
-        });
+        fiatInput.addEventListener('input', updateCryptoOutput);
         
-        connectorSelect.addEventListener('change', () => {
-            updateConnectorSelection();
-            updateWalletDisplay();
-        });
-
-        // Event listener for the main "Confirm" button
-        confirmBtn.addEventListener('click', () => {
-            const currency = document.getElementById('currency-select').value;
-            const connectorName = document.getElementById('connector-select').options[document.getElementById('connector-select').selectedIndex].text;
-            const amount = parseFloat(document.getElementById('amount-input').value);
-            
+        convertBtn.addEventListener('click', () => {
+            const amount = parseFloat(fiatInput.value);
             if (isNaN(amount) || amount <= 0) {
-                document.getElementById('amount-input').style.borderColor = 'oklch(var(--color-reject))';
+                fiatInput.style.borderColor = 'oklch(var(--color-reject))';
                 return;
             } else {
-                document.getElementById('amount-input').style.borderColor = '';
+                fiatInput.style.borderColor = '';
             }
-            
-            // Add to mock transactions
-            transactions.unshift({ 
-                type: transactionType, 
-                amount: amount, 
-                currency: currency, 
-                date: new Date().toLocaleDateString('en-US', { hour: '2-digit', minute: '2-digit' }), 
-                status: 'Completed', 
-                statusClass: 'bg-[var(--color-success-secondary)] text-[var(--color-success)]' 
+
+            // Update transactions list with a mock conversion
+            transactions.unshift({
+                type: 'Convert',
+                amount: amount,
+                currency: 'USD',
+                date: new Date().toLocaleDateString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                status: 'Completed',
+                statusClass: 'bg-[var(--color-success-secondary)] text-[var(--color-success)]'
             });
             renderTransactionList();
 
-            // Update connector usage
-            const connectorIndex = connectors.findIndex(c => c.name === connectorName);
-            if (connectorIndex !== -1) {
-                const currentUsage = connectors[connectorIndex].usage;
-                connectors[connectorIndex].usage = Math.min(100, currentUsage + 1); // Increment usage by 1 for demonstration
-            }
-            renderConnectorUsage();
-            
-            // Clear the amount input after a successful transaction
-            document.getElementById('amount-input').value = '';
+            // Clear input after conversion
+            fiatInput.value = '';
+            cryptoOutput.value = '';
         });
-        
-        // Initial render on page load
+
         document.addEventListener('DOMContentLoaded', () => {
-            renderConnectorUsage();
+            renderConnectors();
             renderTransactionList();
+            updateCryptoOutput();
         });
     </script>
 </body>
