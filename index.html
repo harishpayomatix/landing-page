@@ -61,67 +61,11 @@
             --color-brand-magenta: oklch(0.65 0.15 330);
             --color-pending: oklch(0.85 0.2 60);
             --color-archived: oklch(0.5 0.05 270);
-            --color-chart-6: oklch(0.8 0.15 120);
-            --color-chart-7: oklch(0.7 0.15 280);
-            --color-chart-8: oklch(0.75 0.18 50);
-            --color-chart-9: oklch(0.6 0.13 160);
-            --color-chart-10: oklch(0.55 0.1 350);
-        }
-
-        .dark {
-            --background: oklch(0.145 0 0);
-            --foreground: oklch(0.985 0 0);
-            --card: oklch(0.205 0 0);
-            --card-foreground: oklch(0.985 0 0);
-            --popover: oklch(0.205 0 0);
-            --popover-foreground: oklch(0.985 0 0);
-            --primary: oklch(0.7423 0.0942 317.21);
-            --primary-foreground: oklch(0.208 0.042 265.755);
-            --secondary: oklch(0.5354 0.0579 240.57);
-            --secondary-foreground: oklch(0.984 0.003 247.858);
-            --muted: oklch(0.269 0 0);
-            --muted-foreground: oklch(0.708 0 0);
-            --accent: oklch(0.269 0 0);
-            --accent-foreground: oklch(0.985 0 0);
-            --destructive: oklch(0.704 0.191 22.216);
-            --border: oklch(1 0 0 / 10%);
-            --input: oklch(1 0 0 / 15%);
-            --ring: oklch(0.556 0 0);
-            --chart-1: oklch(0.488 0.243 264.376);
-            --chart-2: oklch(0.696 0.17 162.48);
-            --chart-3: oklch(0.769 0.188 70.08);
-            --chart-4: oklch(0.627 0.265 303.9);
-            --chart-5: oklch(0.645 0.246 16.439);
-            --sidebar: oklch(0.205 0 0);
-            --sidebar-foreground: oklch(0.985 0 0);
-            --sidebar-primary: oklch(0.488 0.243 264.376);
-            --sidebar-primary-foreground: oklch(0.985 0 0);
-            --sidebar-accent: oklch(0.269 0 0);
-            --sidebar-accent-foreground: oklch(0.985 0 0);
-            --sidebar-border: oklch(1 0 0 / 10%);
-            --sidebar-ring: oklch(0.556 0 0);
-            --color-success: oklch(0.72 0.16 147);
-            --color-warning: oklch(0.77 0.2 85);
-            --color-reject: oklch(0.78 0.2 25);
-            --color-info: oklch(0.75 0.13 260);
-            --color-success-secondary: oklch(0.38 0.1 147);
-            --color-warning-secondary: oklch(0.46 0.14 85);
-            --color-reject-secondary: oklch(0.48 0.13 25);
-            --color-info-secondary: oklch(0.43 0.09 260);
-            --dusky-gray: oklch(30% 0.005 286.38);
-            --color-gray-100: oklch(0.2 0.005 260);
-            --color-gray-200: oklch(0.25 0.01 260);
-            --color-gray-300: oklch(0.3 0.015 260);
-            --color-brand-cyan: oklch(0.7 0.1 200);
-            --color-brand-purple: oklch(0.7 0.12 300);
-            --color-brand-magenta: oklch(0.75 0.15 330);
-            --color-pending: oklch(0.85 0.22 85);
-            --color-archived: oklch(0.65 0.05 270);
             --color-chart-6: oklch(0.85 0.15 120);
             --color-chart-7: oklch(0.8 0.15 280);
             --color-chart-8: oklch(0.85 0.18 50);
             --color-chart-9: oklch(0.7 0.13 160);
-            --color-chart-10: oklch(0.65 0.1 350);
+            --color-chart-10: oklch(0.55 0.1 350);
         }
 
         .dark {
@@ -184,13 +128,9 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Modal specific styles */
-        .modal {
-            display: none;
-        }
-
-        .modal.open {
-            display: flex;
+        .selected-connector {
+            border-color: var(--primary);
+            background-color: var(--muted);
         }
     </style>
 </head>
@@ -199,7 +139,7 @@
     <!-- Header / Navigation Bar -->
     <header class="p-6 md:p-8 flex justify-between items-center bg-[var(--background)]/80 shadow-sm border-b border-[var(--border)]">
         <div class="flex items-center space-x-2">
-            <h1 class="text-2xl font-bold">CRYPTO.</h1>
+            <h1 class="text-xl font-bold">CRYPTO.</h1>
         </div>
         <nav class="hidden md:flex space-x-8 text-[var(--muted-foreground)]">
             <a href="#" class="font-semibold hover:text-[var(--foreground)] transition-colors duration-300">Dashboard</a>
@@ -218,276 +158,228 @@
     </header>
 
     <!-- Main Dashboard Content -->
-    <main class="p-6 md:p-8">
-        <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
+    <main class="p-6 md:p-8 space-y-6 md:grid md:grid-cols-2 md:gap-6">
+        <h2 class="col-span-2 text-2xl font-bold mb-6">Dashboard</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            <!-- Card 1: On-Ramp/Off-Ramp Widget (Primary) -->
-            <div class="md:col-span-2 bg-[var(--card)] p-8 rounded-xl shadow-lg border border-[var(--border)]">
-                <h3 class="text-2xl font-semibold text-[var(--card-foreground)] mb-4">Buy & Sell Crypto</h3>
-                <div class="flex flex-col md:flex-row gap-4 mb-4">
-                    <button id="buy-tab" class="flex-1 p-3 rounded-lg font-bold transition-colors duration-300 bg-[var(--primary)] text-[var(--primary-foreground)]">Buy</button>
-                    <button id="sell-tab" class="flex-1 p-3 rounded-lg font-bold transition-colors duration-300 bg-[var(--muted)] text-[var(--muted-foreground)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)]">Sell</button>
-                </div>
-                
-                <div class="space-y-4">
-                    <div>
-                        <label for="currency-select" class="block text-sm font-medium mb-1 text-[var(--muted-foreground)]">Select Crypto</label>
-                        <select id="currency-select" class="w-full p-3 rounded-lg bg-[var(--input)] text-[var(--foreground)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
-                            <option value="BTC">Bitcoin (BTC)</option>
-                            <option value="ETH">Ethereum (ETH)</option>
-                            <option value="SOL">Solana (SOL)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="amount-input" class="block text-sm font-medium mb-1 text-[var(--muted-foreground)]">Amount</label>
-                        <input type="number" id="amount-input" placeholder="Enter amount" class="w-full p-3 rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder-[var(--muted-foreground)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
-                    </div>
-                    <button id="confirm-transaction" class="w-full p-4 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold shadow-md transition-transform duration-300 hover:scale-[1.02]">Confirm</button>
-                </div>
+        <!-- Card 1: Transfer Funds -->
+        <div class="bg-[var(--card)] p-8 rounded-xl shadow-lg border border-[var(--border)] col-span-2 md:col-span-1">
+            <h3 class="text-xl font-semibold text-[var(--card-foreground)] mb-4">Transfer Funds</h3>
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
+                <button id="send-tab" class="flex-1 p-3 rounded-lg font-bold transition-colors duration-300 bg-[var(--primary)] text-[var(--primary-foreground)]">Send</button>
+                <button id="receive-tab" class="flex-1 p-3 rounded-lg font-bold transition-colors duration-300 bg-[var(--muted)] text-[var(--muted-foreground)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)]">Receive</button>
             </div>
-
-            <!-- Card 2: Portfolio Overview -->
-            <div class="bg-[var(--card)] p-6 rounded-xl shadow-lg border border-[var(--border)]">
-                <h3 class="text-2xl font-semibold text-[var(--card-foreground)] mb-4">Portfolio Overview</h3>
-                <div class="text-center mb-6">
-                    <p class="text-[var(--muted-foreground)] text-sm">Total Portfolio Value</p>
-                    <p id="portfolio-value" class="text-4xl font-bold text-[var(--foreground)]">$12,450.78</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="currency-select" class="block text-sm font-medium mb-1 text-[var(--muted-foreground)]">Select Crypto</label>
+                    <select id="currency-select" class="w-full p-3 rounded-lg bg-[var(--input)] text-[var(--foreground)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="SOL">Solana (SOL)</option>
+                    </select>
                 </div>
-                <ul class="space-y-4" id="portfolio-list">
-                    <li class="flex justify-between items-center">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                            <span class="font-medium text-[var(--foreground)]">Bitcoin (BTC)</span>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-semibold text-[var(--foreground)]" data-balance="8500.00">$8,500.00</p>
-                            <p class="text-xs text-[var(--muted-foreground)]">68.2%</p>
-                        </div>
-                    </li>
-                    <li class="flex justify-between items-center">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-                            <span class="font-medium text-[var(--foreground)]">Ethereum (ETH)</span>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-semibold text-[var(--foreground)]" data-balance="3200.00">$3,200.00</p>
-                            <p class="text-xs text-[var(--muted-foreground)]">25.7%</p>
-                        </div>
-                    </li>
-                    <li class="flex justify-between items-center">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-                            <span class="font-medium text-[var(--foreground)]">Solana (SOL)</span>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-semibold text-[var(--foreground)]" data-balance="750.78">$750.78</p>
-                            <p class="text-xs text-[var(--muted-foreground)]">6.1%</p>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Card 3: Live Market Data -->
-            <div class="bg-[var(--card)] p-6 rounded-xl shadow-lg border border-[var(--border)] md:col-span-2">
-                <h3 class="text-2xl font-semibold text-[var(--card-foreground)] mb-4">Live Market Data</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="text-[var(--muted-foreground)]">
-                                <th class="py-2">Asset</th>
-                                <th class="py-2">Price</th>
-                                <th class="py-2">24h Change</th>
-                            </tr>
-                        </thead>
-                        <tbody id="market-data">
-                            <tr class="border-t border-[var(--border)] text-[var(--foreground)]" data-currency="BTC">
-                                <td class="py-4 font-semibold">Bitcoin</td>
-                                <td class="price">$67,450.23</td>
-                                <td class="change text-green-500">+1.5%</td>
-                            </tr>
-                            <tr class="border-t border-[var(--border)] text-[var(--foreground)]" data-currency="ETH">
-                                <td class="py-4 font-semibold">Ethereum</td>
-                                <td class="price">$3,890.10</td>
-                                <td class="change text-red-500">-0.8%</td>
-                            </tr>
-                            <tr class="border-t border-[var(--border)] text-[var(--foreground)]" data-currency="SOL">
-                                <td class="py-4 font-semibold">Solana</td>
-                                <td class="price">$125.75</td>
-                                <td class="change text-green-500">+2.4%</td>
-                            </tr>
-                            <tr class="border-t border-[var(--border)] text-[var(--foreground)]" data-currency="ADA">
-                                <td class="py-4 font-semibold">Cardano</td>
-                                <td class="price">$0.456</td>
-                                <td class="change text-red-500">-1.2%</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div>
+                    <label for="connector-select" class="block text-sm font-medium mb-1 text-[var(--muted-foreground)]">Transfer Method</label>
+                    <select id="connector-select" class="w-full p-3 rounded-lg bg-[var(--input)] text-[var(--foreground)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
+                        <option value="bank">Bank Transfer</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="wallet">Crypto Wallet</option>
+                    </select>
                 </div>
+                <div id="wallet-display-container" class="mt-4 hidden">
+                    <label class="block text-sm font-medium mb-1 text-[var(--muted-foreground)]">Associated Wallet Address</label>
+                    <div id="wallet-display" class="p-3 bg-[var(--muted)] rounded-lg text-[var(--foreground)] text-sm break-words border border-[var(--border)]"></div>
+                </div>
+                <div>
+                    <label for="amount-input" class="block text-sm font-medium mb-1 text-[var(--muted-foreground)]">Amount</label>
+                    <input type="number" id="amount-input" placeholder="Enter amount" class="w-full p-3 rounded-lg bg-[var(--input)] text-[var(--foreground)] placeholder-[var(--muted-foreground)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
+                </div>
+                <button id="confirm-transaction" class="w-full p-4 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold shadow-md transition-transform duration-300 hover:scale-[1.02]">Confirm</button>
             </div>
+        </div>
 
-            <!-- Card 4: Recent Transaction History -->
-            <div class="bg-[var(--card)] p-6 rounded-xl shadow-lg border border-[var(--border)]">
-                <h3 class="text-2xl font-semibold text-[var(--card-foreground)] mb-4">Recent Transactions</h3>
-                <ul class="divide-y divide-[var(--border)]">
-                    <li class="py-4 flex justify-between items-center">
-                        <div>
-                            <p class="font-semibold text-[var(--foreground)]">Bought 0.05 BTC</p>
-                            <p class="text-sm text-[var(--muted-foreground)]">Jun 25, 2024 at 10:30 AM</p>
-                        </div>
-                        <span class="px-3 py-1 text-sm rounded-full bg-[var(--color-success-secondary)] text-[var(--color-success)]">Completed</span>
-                    </li>
-                    <li class="py-4 flex justify-between items-center">
-                        <div>
-                            <p class="font-semibold text-[var(--foreground)]">Sold 2.0 ETH</p>
-                            <p class="text-sm text-[var(--muted-foreground)]">Jun 24, 2024 at 03:15 PM</p>
-                        </div>
-                        <span class="px-3 py-1 text-sm rounded-full bg-[var(--color-success-secondary)] text-[var(--color-success)]">Completed</span>
-                    </li>
-                    <li class="py-4 flex justify-between items-center">
-                        <div>
-                            <p class="font-semibold text-[var(--foreground)]">Withdrawal to Bank</p>
-                            <p class="text-sm text-[var(--muted-foreground)]">Jun 23, 2024 at 09:00 AM</p>
-                        </div>
-                        <span class="px-3 py-1 text-sm rounded-full bg-[var(--color-pending)] text-[var(--color-warning)]">Pending</span>
-                    </li>
-                </ul>
-                <a href="#" class="mt-4 block text-center text-[var(--primary)] font-semibold hover:underline">View All Transactions</a>
+        <!-- Card 2: Recent Transaction History -->
+        <div class="bg-[var(--card)] p-6 rounded-xl shadow-lg border border-[var(--border)] col-span-2 md:col-span-1">
+            <h3 class="text-xl font-semibold text-[var(--card-foreground)] mb-4">Recent Transactions</h3>
+            <ul id="transaction-list" class="divide-y divide-[var(--border)]">
+                <!-- Transaction items will be dynamically added here -->
+            </ul>
+            <a href="#" class="mt-4 block text-center text-[var(--primary)] font-semibold hover:underline">View All Transactions</a>
+        </div>
+        
+        <!-- Card 3: Connector Usage -->
+        <div class="bg-[var(--card)] p-6 rounded-xl shadow-lg border border-[var(--border)] col-span-2 md:col-span-1">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-[var(--card-foreground)]">Your Connectors</h3>
             </div>
-
+            <ul id="connector-usage-list" class="space-y-4">
+                <!-- Connector items will be dynamically added here -->
+            </ul>
         </div>
     </main>
-
-    <!-- Transaction Confirmation Modal -->
-    <div id="transaction-modal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-[var(--background)]/80 transition-opacity duration-300">
-        <div class="bg-[var(--card)] p-8 rounded-xl shadow-2xl w-full max-w-sm transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
-            <h3 class="text-2xl font-bold text-[var(--card-foreground)] mb-4 text-center" id="modal-title"></h3>
-            <div class="space-y-4 mb-6">
-                <p class="flex justify-between text-[var(--muted-foreground)]"><span>Currency:</span> <span id="modal-currency" class="text-[var(--foreground)] font-semibold"></span></p>
-                <p class="flex justify-between text-[var(--muted-foreground)]"><span>Amount:</span> <span id="modal-amount" class="text-[var(--foreground)] font-semibold"></span></p>
-                <p class="flex justify-between text-[var(--muted-foreground)]"><span>Total Cost:</span> <span id="modal-cost" class="text-[var(--foreground)] font-semibold"></span></p>
-            </div>
-            <div class="flex flex-col gap-4">
-                <button id="close-modal" class="w-full p-3 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold hover:bg-[var(--primary)]/90 transition-colors duration-300">Close</button>
-            </div>
-        </div>
-    </div>
 
     <script>
         document.getElementById('theme-toggle').addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
         });
 
-        const cryptoData = {
-            'BTC': { name: 'Bitcoin', price: 67450.23, color: 'blue-500' },
-            'ETH': { name: 'Ethereum', price: 3890.10, color: 'purple-500' },
-            'SOL': { name: 'Solana', price: 125.75, color: 'cyan-400' },
-            'ADA': { name: 'Cardano', price: 0.456, color: 'gray-500' }
-        };
-
-        const marketTable = document.getElementById('market-data');
-        const portfolioValueEl = document.getElementById('portfolio-value');
-        const buyTab = document.getElementById('buy-tab');
-        const sellTab = document.getElementById('sell-tab');
+        const sendTab = document.getElementById('send-tab');
+        const receiveTab = document.getElementById('receive-tab');
         const confirmBtn = document.getElementById('confirm-transaction');
-        const modal = document.getElementById('transaction-modal');
-        const modalContent = document.getElementById('modal-content');
-        const closeModalBtn = document.getElementById('close-modal');
+        const connectorListEl = document.getElementById('connector-usage-list');
+        const transactionListEl = document.getElementById('transaction-list');
+        const connectorSelect = document.getElementById('connector-select');
+        const walletDisplay = document.getElementById('wallet-display');
+        const walletDisplayContainer = document.getElementById('wallet-display-container');
+        
+        let transactionType = 'Send';
 
-        let transactionType = 'Buy';
+        // Mock data for connectors and their usage
+        const connectors = [
+            { name: 'Bank Transfer', usage: 75, color: 'brand-cyan', value: 'bank', wallet: 'N/A' },
+            { name: 'Credit/Debit Card', usage: 45, color: 'brand-purple', value: 'card', wallet: 'N/A' },
+            { name: 'Crypto Wallet', usage: 90, color: 'brand-magenta', value: 'wallet', wallet: '0x32A6f4B9c7bC8bE17E451C8D4f49B55bE1286C45' },
+        ];
+        
+        // Mock data for recent transactions
+        const transactions = [
+            { type: 'Sent', amount: 0.05, currency: 'BTC', date: 'Jun 25, 2024 at 10:30 AM', status: 'Completed', statusClass: 'bg-[var(--color-success-secondary)] text-[var(--color-success)]' },
+            { type: 'Received', amount: 2.0, currency: 'ETH', date: 'Jun 24, 2024 at 03:15 PM', status: 'Completed', statusClass: 'bg-[var(--color-success-secondary)] text-[var(--color-success)]' },
+            { type: 'Sent', amount: 0.1, currency: 'SOL', date: 'Jun 23, 2024 at 09:00 AM', status: 'Pending', statusClass: 'bg-[var(--color-pending)] text-[var(--color-warning)]' },
+        ];
 
-        function updateLiveMarketData() {
-            Object.keys(cryptoData).forEach(key => {
-                const currentPrice = cryptoData[key].price;
-                const priceChange = (Math.random() - 0.5) * currentPrice * 0.02; // Change up to 1%
-                const newPrice = currentPrice + priceChange;
-                const changePercent = (priceChange / currentPrice) * 100;
-                cryptoData[key].price = parseFloat(newPrice.toFixed(2));
+        function renderConnectorUsage() {
+            connectorListEl.innerHTML = '';
+            connectors.forEach(connector => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('p-4', 'rounded-lg', 'border', 'border-[var(--border)]', 'space-y-2', 'cursor-pointer', 'hover:bg-[var(--muted)]', 'transition-all', 'duration-200');
+                listItem.dataset.connectorValue = connector.value;
+                listItem.dataset.walletAddress = connector.wallet;
+                listItem.innerHTML = `
+                    <div class="flex justify-between items-center text-[var(--foreground)]">
+                        <span class="font-medium">${connector.name}</span>
+                        <span class="text-sm font-semibold">${connector.usage}%</span>
+                    </div>
+                    <div class="w-full bg-[var(--muted)] rounded-full h-2.5">
+                        <div class="h-2.5 rounded-full" style="width: ${connector.usage}%; background-color: oklch(var(--color-${connector.color}))"></div>
+                    </div>
+                `;
+                connectorListEl.appendChild(listItem);
+            });
+            updateConnectorSelection();
+            updateWalletDisplay();
+        }
+        
+        function renderTransactionList() {
+            transactionListEl.innerHTML = '';
+            transactions.forEach(tx => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('py-4', 'flex', 'justify-between', 'items-center');
+                listItem.innerHTML = `
+                    <div>
+                        <p class="font-semibold text-[var(--foreground)]">${tx.type} ${tx.amount} ${tx.currency}</p>
+                        <p class="text-sm text-[var(--muted-foreground)]">${tx.date}</p>
+                    </div>
+                    <span class="px-3 py-1 text-sm rounded-full ${tx.statusClass}">${tx.status}</span>
+                `;
+                transactionListEl.appendChild(listItem);
+            });
+        }
 
-                const row = document.querySelector(`[data-currency="${key}"]`);
-                if (row) {
-                    const priceEl = row.querySelector('.price');
-                    const changeEl = row.querySelector('.change');
-                    priceEl.textContent = `$${newPrice.toFixed(2)}`;
-                    changeEl.textContent = `${changePercent > 0 ? '+' : ''}${changePercent.toFixed(2)}%`;
-                    changeEl.classList.toggle('text-green-500', changePercent > 0);
-                    changeEl.classList.toggle('text-red-500', changePercent < 0);
+        function updateConnectorSelection() {
+            const currentSelectedValue = connectorSelect.value;
+            const allListItems = connectorListEl.querySelectorAll('li');
+            allListItems.forEach(item => {
+                if (item.dataset.connectorValue === currentSelectedValue) {
+                    item.classList.add('selected-connector');
+                } else {
+                    item.classList.remove('selected-connector');
                 }
             });
         }
 
-        function updatePortfolioValue() {
-            let totalValue = 0;
-            document.querySelectorAll('#portfolio-list [data-balance]').forEach(el => {
-                const currentBalance = parseFloat(el.dataset.balance);
-                const valueChange = (Math.random() - 0.5) * currentBalance * 0.05; // Change up to 2.5%
-                const newBalance = currentBalance + valueChange;
-                el.dataset.balance = newBalance.toFixed(2);
-                el.textContent = `$${newBalance.toFixed(2)}`;
-                totalValue += newBalance;
-            });
-            portfolioValueEl.textContent = `$${totalValue.toFixed(2)}`;
+        function updateWalletDisplay() {
+            const selectedConnector = connectors.find(c => c.value === connectorSelect.value);
+            if (selectedConnector && selectedConnector.wallet !== 'N/A') {
+                walletDisplay.textContent = selectedConnector.wallet;
+                walletDisplayContainer.classList.remove('hidden');
+            } else {
+                walletDisplayContainer.classList.add('hidden');
+            }
         }
 
-        function openModal() {
+        sendTab.addEventListener('click', () => {
+            transactionType = 'Send';
+            sendTab.classList.add('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
+            sendTab.classList.remove('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
+            receiveTab.classList.add('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
+            receiveTab.classList.remove('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
+        });
+
+        receiveTab.addEventListener('click', () => {
+            transactionType = 'Receive';
+            receiveTab.classList.add('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
+            receiveTab.classList.remove('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
+            sendTab.classList.add('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
+            sendTab.classList.remove('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
+        });
+
+        connectorListEl.addEventListener('click', (event) => {
+            const clickedItem = event.target.closest('li');
+            if (clickedItem) {
+                const selectedValue = clickedItem.dataset.connectorValue;
+                connectorSelect.value = selectedValue;
+                updateConnectorSelection();
+                updateWalletDisplay();
+            }
+        });
+        
+        connectorSelect.addEventListener('change', () => {
+            updateConnectorSelection();
+            updateWalletDisplay();
+        });
+
+        // Event listener for the main "Confirm" button
+        confirmBtn.addEventListener('click', () => {
             const currency = document.getElementById('currency-select').value;
+            const connectorName = document.getElementById('connector-select').options[document.getElementById('connector-select').selectedIndex].text;
             const amount = parseFloat(document.getElementById('amount-input').value);
-
+            
             if (isNaN(amount) || amount <= 0) {
-                return; // Do nothing if amount is invalid
+                document.getElementById('amount-input').style.borderColor = 'oklch(var(--color-reject))';
+                return;
+            } else {
+                document.getElementById('amount-input').style.borderColor = '';
             }
+            
+            // Add to mock transactions
+            transactions.unshift({ 
+                type: transactionType, 
+                amount: amount, 
+                currency: currency, 
+                date: new Date().toLocaleDateString('en-US', { hour: '2-digit', minute: '2-digit' }), 
+                status: 'Completed', 
+                statusClass: 'bg-[var(--color-success-secondary)] text-[var(--color-success)]' 
+            });
+            renderTransactionList();
 
-            const price = cryptoData[currency].price;
-            const totalCost = amount * price;
-
-            document.getElementById('modal-title').textContent = `${transactionType} Confirmation`;
-            document.getElementById('modal-currency').textContent = currency;
-            document.getElementById('modal-amount').textContent = amount.toFixed(4);
-            document.getElementById('modal-cost').textContent = `$${totalCost.toFixed(2)}`;
-
-            modal.classList.add('open');
-            setTimeout(() => {
-                modalContent.classList.remove('scale-95', 'opacity-0');
-            }, 10);
-        }
-
-        function closeModal() {
-            modalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.remove('open');
-            }, 300);
-        }
-
-        buyTab.addEventListener('click', () => {
-            transactionType = 'Buy';
-            buyTab.classList.add('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
-            buyTab.classList.remove('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
-            sellTab.classList.add('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
-            sellTab.classList.remove('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
-        });
-
-        sellTab.addEventListener('click', () => {
-            transactionType = 'Sell';
-            sellTab.classList.add('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
-            sellTab.classList.remove('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
-            buyTab.classList.add('bg-[var(--muted)]', 'text-[var(--muted-foreground)]');
-            buyTab.classList.remove('bg-[var(--primary)]', 'text-[var(--primary-foreground)]');
-        });
-
-        confirmBtn.addEventListener('click', openModal);
-        closeModalBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
+            // Update connector usage
+            const connectorIndex = connectors.findIndex(c => c.name === connectorName);
+            if (connectorIndex !== -1) {
+                const currentUsage = connectors[connectorIndex].usage;
+                connectors[connectorIndex].usage = Math.min(100, currentUsage + 1); // Increment usage by 1 for demonstration
             }
+            renderConnectorUsage();
+            
+            // Clear the amount input after a successful transaction
+            document.getElementById('amount-input').value = '';
         });
-
-        // Update data every 5 seconds
-        setInterval(updateLiveMarketData, 5000);
-        setInterval(updatePortfolioValue, 5000);
-
+        
+        // Initial render on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderConnectorUsage();
+            renderTransactionList();
+        });
     </script>
 </body>
 </html>
-
